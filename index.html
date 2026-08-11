@@ -227,9 +227,10 @@ if(d.error || d.errors){
       onTick(d.tick);
     }
     else if(d.error){
-      log("API error: "+d.error.message);
-      setStatus(false,"API error");
-    }
+  const msg = d.error.message || JSON.stringify(d.error);
+  log("API error: " + msg);
+  setStatus(false, msg);
+}
   };
 
   ws.onclose=()=>setStatus(false,"Disconnected");
