@@ -164,7 +164,7 @@ function onTick(t){
 function connect(){
   if(ws) try{ws.close()}catch{}
   setStatus(false,"Loading history...");
-  ws=new WebSocket("wss://api.derivws.com/trading/v1/options/ws/public");
+  ws = new WebSocket("wss://ws.binaryws.com/websockets/v3");
 
   ws.onopen=()=>{
     setStatus(true,"Loading history...");
@@ -172,7 +172,7 @@ function connect(){
   ticks_history: SYMBOL,
   end: "latest",
   count: 100,
-  style: "candles",
+  style: "ticks",
   granularity: Number($("#tf").value),
   subscribe: 1,
   req_id: 1
