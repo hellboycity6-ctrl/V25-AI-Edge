@@ -71,7 +71,7 @@
 </main>
 <script>
 const SYMBOL = "1HZ25V"; // V25 (1s). If unavailable, use the symbol returned by Deriv active_symbols.
-let ws, chart, candleSeries, candles=[], current=null, tickCount=0, lastSignal="WAIT";
+let ws, chart, candleSeries, candles=[], current=null, tickCount=0, lastSignal="WAIT", pendingSignal="WAIT", pendingCount=0;
 
 const $=id=>document.getElementById(id);
 function log(s){const e=$("log");e.innerHTML=`${new Date().toLocaleTimeString()} — ${s}<br>`+e.innerHTML.slice(0,1800)}
@@ -100,6 +100,17 @@ let score=(trend==="BULLISH"?1:-1)+(mom==="BULLISH"?1:mom==="BEARISH"?-1:0)+(str
 
 const threshold=volatility==="HIGH"?2:1;
 let signal=trend==="BULLISH"&&mom==="BULLISH"&&score>=threshold?"BUY":trend==="BEARISH"&&mom==="BEARISH"&&score<=-threshold?"SELL":"WAIT";
+
+if(signal!=="WAIT"){
+  if(signal===pendingSignal) pendingCount++;
+  else {pendingSignal=signal; pendingCount=1;}
+}else{
+  pendingSignal="WAIT";
+  pendingCount=0;
+}
+
+signal=pendingCount>=3?pendingSignal:"WAIT";
+if(signal!=="WAIT") lastSignal=signal;
 
 let confidence=Math.max(50,Math.min(95,50+Math.abs(score)*10-volPenalty*10));
 
