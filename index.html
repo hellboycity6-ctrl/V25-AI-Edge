@@ -181,7 +181,7 @@ function connect(){
 
   ws.onmessage=e=>{
     let d=JSON.parse(e.data);
-    log("DERIV: "+e.data);
+   log("RAW: "+e.data); 
 if(d.error || d.errors){
   const msg = d.error?.message || d.errors?.[0]?.message || "Unknown API error";
   log("API ERROR: "+msg);
