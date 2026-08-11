@@ -188,7 +188,7 @@ ws.onclose=e=>{
 };
 
   ws.onmessage=e=>{
-    let d=JSON.parse(e.data);
+  let d=JSON.parse(e.data); log("MSG TYPE: "+d.msg_type);  
    log("RAW: "+e.data); 
 if(d.error || d.errors){
   const msg = d.error?.message || d.errors?.[0]?.message || "Unknown API error";
