@@ -102,23 +102,26 @@ let reason=signal==="BUY"
 $("reason").textContent=reason;
   $("entry").textContent=round(price);
   const risk=aa*1.5;
+const tp1Risk=risk*1.5;
+const tp2Risk=risk*2.5;
 
 if(signal==="BUY"){
   $("stop").textContent=round(price-risk);
-  $("tp1").textContent=round(price+risk*1.5);
-  $("tp2").textContent=round(price+risk*2.5);
+  $("tp1").textContent=round(price+tp1Risk);
+  $("tp2").textContent=round(price+tp2Risk);
 }
 else if(signal==="SELL"){
   $("stop").textContent=round(price+risk);
-  $("tp1").textContent=round(price-risk*1.5);
-  $("tp2").textContent=round(price-risk*2.5);
+  $("tp1").textContent=round(price-tp1Risk);
+  $("tp2").textContent=round(price-tp2Risk);
 }
 else{
-  $("stop").textContent="—";
-  $("tp1").textContent="—";
-  $("tp2").textContent="—";
+  $("stop").textContent="-";
+  $("tp1").textContent="-";
+  $("tp2").textContent="-";
 }
-  if(signal!==lastSignal){log(`Signal changed: ${signal}`);lastSignal=signal}
+
+if(signal!==lastSignal){log(`Signal changed: ${signal}`);lastSignal=signal}
 }
 function bucket(epoch,mins){return Math.floor(epoch/(mins*60))*(mins*60)}
 function onTick(t){
