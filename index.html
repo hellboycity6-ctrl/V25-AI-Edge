@@ -114,9 +114,9 @@ let reason=signal==="BUY"
 
 $("reason").textContent=reason;
   $("entry").textContent=round(price);
-  const risk=aa*1.5;
-const tp1Risk=risk*1.5;
-const tp2Risk=risk*2.5;
+  const risk=aa*(volatility==="HIGH"?1.8:volatility==="NORMAL"?1.4:1.1);
+const tp1Risk=aa*(volatility==="HIGH"?2.5:volatility==="NORMAL"?2.0:1.6);
+const tp2Risk=aa*(volatility==="HIGH"?3.5:volatility==="NORMAL"?3.0:2.4);
 
 if(signal==="BUY"){
   $("stop").textContent=round(price-risk);
