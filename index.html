@@ -168,16 +168,27 @@ function connect(){
 
   ws.onopen=()=>{
     setStatus(true,"Loading history...");
-    log("Connected");
-    ws.send(JSON.stringify({
-      ticks_history:SYMBOL,
-      end:"latest",
-      count:100,
-      style:"candles",
-      granularity:Number($("#tf").value)*60, 
-      req_id:1
-    }));
+    log("Connected");ws.send(JSON.stringify({
+  ticks_history: SYMBOL,
+  end: "latest",
+  count: 100,
+  style: "candles",
+  granularity: Number($("#tf").value),
+  subscribe: 1,
+  req_id: 1
+}));
+    
   };
+
+  ws.onerror=()=>{
+  log("WS ERROR");
+  setStatus(false,"WebSocket error");
+};
+
+ws.onclose=e=>{
+  log("WS CLOSED: "+e.code+" "+e.reason);
+  setStatus(false,"Disconnected");
+};
 
   ws.onmessage=e=>{
     let d=JSON.parse(e.data);
