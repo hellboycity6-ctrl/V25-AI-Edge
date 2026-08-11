@@ -106,7 +106,7 @@ function onTick(t){
 }
 function connect(){
   if(ws)try{ws.close()}catch{}
-  setStatus(false,"Connecting…"); ws=new WebSocket("wss://api.derivws.com/trading/v1/options/ws/public");
+  setStatus(false,"Connecting…"); ws=new WebSocket("wss://ws.binaryws.com/websockets/v3");
   ws.onopen=()=>{setStatus(true,"Live");log("Connected");ws.send(JSON.stringify({ticks:SYMBOL,subscribe:1,req_id:1}))}
   ws.onmessage=e=>{let d=JSON.parse(e.data);if(d.msg_type==="tick")onTick(d.tick);else if(d.error){log("API error: "+d.error.message);setStatus(false,"Feed error")}}
   ws.onclose=()=>setStatus(false,"Disconnected"); ws.onerror=()=>setStatus(false,"Connection error");
