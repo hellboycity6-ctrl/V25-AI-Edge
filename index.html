@@ -184,7 +184,7 @@ function connect(){
 
 ws.onclose=e=>{
   log("WS CLOSED: "+e.code+" "+e.reason);
-  setStatus(false,"Disconnected");
+  setStatus(false,"Disconnected "+e.code+" "+e.reason);
 };
 
   ws.onmessage=e=>{
