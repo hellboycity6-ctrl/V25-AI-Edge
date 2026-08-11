@@ -87,14 +87,37 @@ function analyze(){
   const trend=e20>e50?"BULLISH":"BEARISH"; const mom=rr>=55?"BULLISH":rr<=45?"BEARISH":"NEUTRAL";
   $("trend").textContent=trend;$("momentum").textContent=mom;
   let score=(trend==="BULLISH"?1:-1)+(mom==="BULLISH"?1:mom==="BEARISH"?-1:0);
-  let signal=score>=2?"BUY":score<=-2?"SELL":"WAIT";
-  $("signal").textContent=signal;$("signal").className="signal "+(signal==="BUY"?"green":signal==="SELL"?"red":"yellow");
-  $("reason").textContent=`EMA trend ${trend.toLowerCase()}, RSI momentum ${mom.toLowerCase()}. This prototype waits for 2 confirmations.`;
+let signal=score>=2?"BUY":score<=-2?"SELL":"WAIT";
+let confidence=50+Math.abs(score)*20;
+
+$("signal").textContent=`${signal} (${confidence}%)`;
+$("signal").className="signal "+(signal==="BUY"?"green":signal==="SELL"?"red":"yellow");
+
+let reason=signal==="BUY"
+  ? `BUY — EMA trend is bullish and RSI momentum is bullish. ${confidence}% signal strength.`
+  : signal==="SELL"
+  ? `SELL — EMA trend is bearish and RSI momentum is bearish. ${confidence}% signal strength.`
+  : `WAIT — waiting for stronger confirmation. EMA: ${trend.toLowerCase()}, momentum: ${mom.toLowerCase()}. ${confidence}% signal strength.`;
+
+$("reason").textContent=reason;
   $("entry").textContent=round(price);
   const risk=aa*1.5;
-  if(signal==="BUY"){ $("stop").textContent=round(price-risk);$("tp1").textContent=round(price+risk*1.2);$("tp2").textContent=round(price+risk*2); }
-  else if(signal==="SELL"){ $("stop").textContent=round(price+risk);$("tp1").textContent=round(price-risk*1.2);$("tp2").textContent=round(price-risk*2); }
-  else {$("stop").textContent=$("tp1").textContent=$("tp2").textContent="—";}
+
+if(signal==="BUY"){
+  $("stop").textContent=round(price-risk);
+  $("tp1").textContent=round(price+risk*1.5);
+  $("tp2").textContent=round(price+risk*2.5);
+}
+else if(signal==="SELL"){
+  $("stop").textContent=round(price+risk);
+  $("tp1").textContent=round(price-risk*1.5);
+  $("tp2").textContent=round(price-risk*2.5);
+}
+else{
+  $("stop").textContent="—";
+  $("tp1").textContent="—";
+  $("tp2").textContent="—";
+}
   if(signal!==lastSignal){log(`Signal changed: ${signal}`);lastSignal=signal}
 }
 function bucket(epoch,mins){return Math.floor(epoch/(mins*60))*(mins*60)}
