@@ -156,7 +156,7 @@ if(signal!==lastSignal){log(`Signal changed: ${signal}`);lastSignal=signal}
 }
 function bucket(epoch,tf){return Math.floor(epoch/tf)*tf}
 function onTick(t){
-  tickCount++; const tf=Number($("tf").value), time=bucket(t.epoch,tf), p=Number(t.quote);
+  tickCount++; const tf=Number($("#tf").value)*60, time=bucket(t.epoch,tf), p=Number(t.quote);
   if(!current||current.time!==time){current={time,open:p,high:p,low:p,close:p};candles.push(current);if(candles.length>600)candles.shift()}
   else{current.high=Math.max(current.high,p);current.low=Math.min(current.low,p);current.close=p}
   candleSeries.update(current); if(tickCount%3===0)analyze();
@@ -174,7 +174,7 @@ function connect(){
       end:"latest",
       count:100,
       style:"candles",
-      granularity:Number($("#tf").value),
+      granularity:Number($("#tf").value)*60, 
       req_id:1
     }));
   };
