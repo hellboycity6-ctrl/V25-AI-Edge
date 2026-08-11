@@ -181,6 +181,7 @@ function connect(){
 
   ws.onmessage=e=>{
     let d=JSON.parse(e.data);
+    log("DERIV: "+e.data);
 if(d.error){
   log("API ERROR: "+d.error.message);
   setStatus(false,"API error");
