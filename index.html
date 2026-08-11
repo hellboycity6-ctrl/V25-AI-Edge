@@ -93,10 +93,15 @@ const mid10=(high10+low10)/2;
 const structure=price>mid10?"BULLISH":price<mid10?"BEARISH":"NEUTRAL";
 
 const volatility=aa>=300?"HIGH":aa>=150?"NORMAL":"LOW";
-const volScore=volatility==="LOW"?-1:volatility==="HIGH"?1:0;
-let score=(trend==="BULLISH"?1:-1)+(mom==="BULLISH"?1:mom==="BEARISH"?-1:0)+(structure==="BULLISH"?1:structure==="BEARISH"?-1:0)+volScore;
-let signal=score>=3?"BUY":score<=-3?"SELL":"WAIT";
-let confidence=Math.min(95,50+Math.abs(score)*15);
+const rsiScore=rr>=60?1:rr<=40?-1:0;
+const volPenalty=volatility==="HIGH"?1:0;
+
+let score=(trend==="BULLISH"?1:-1)+(mom==="BULLISH"?1:mom==="BEARISH"?-1:0)+(structure==="BULLISH"?1:structure==="BEARISH"?-1:0)+rsiScore;
+
+const threshold=volatility==="HIGH"?4:3;
+let signal=score>=threshold?"BUY":score<=-threshold?"SELL":"WAIT";
+
+let confidence=Math.max(50,Math.min(95,50+Math.abs(score)*10-volPenalty*10));
 
 $("signal").textContent=`${signal} (${confidence}%)`;
 $("signal").className="signal "+(signal==="BUY"?"green":signal==="SELL"?"red":"yellow");
