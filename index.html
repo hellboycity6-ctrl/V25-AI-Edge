@@ -182,9 +182,10 @@ function connect(){
   setStatus(false,"WebSocket error");
 };
 
-ws.onclose=e=>{
-  log("WS CLOSED: "+e.code+" "+e.reason);
-  setStatus(false,"Disconnected "+e.code+" "+e.reason);
+ws.onclose = e => {
+  const msg = "WS CLOSED: " + e.code + " " + (e.reason || "no reason");
+  log(msg);
+  setStatus(false, msg);
 };
 
   ws.onmessage=e=>{
