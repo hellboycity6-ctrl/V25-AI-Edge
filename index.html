@@ -120,7 +120,8 @@ function connect(){
       end:"latest",
       count:100,
       style:"candles",
-      granularity:1
+     granularity:parseInt($("#tf").value,10)*60
+    
     }));
   };
 
