@@ -105,12 +105,39 @@ function onTick(t){
   candleSeries.update(current); if(tickCount%3===0)analyze();
 }
 function connect(){
-  if(ws) try{ws.close()}catch(e){}
+  if(ws){
+    try{ ws.close(); }catch(e){}
+  }
 
   setStatus(false,"Connecting...");
 
-  ws=new WebSocket("wss://api.derivws.com/trading/v1/options/ws/public");
+  ws = new WebSocket("wss://api.derivws.com/trading/v1/options/ws/public");
 
+  ws.onopen = () => {
+    setStatus(true,"Loading V25 history...");
+    log("Connected to Deriv");
+
+    ws.send(JSON.stringify({
+      ticks_history: SYMBOL,
+      end: "latest",
+      count: 100,
+      style: "candles",
+      granularity: parseInt($("#tf").value,10) * 60
+    }));
+  };
+
+  ws.onerror = (e) => {
+    console.error("WebSocket error:", e);
+    log("WebSocket connection error");
+    setStatus(false,"Connection error");
+  };
+
+  ws.onclose = (e) => {
+    console.log("WebSocket closed:", e.code, e.reason);
+    log("WebSocket closed: " + e.code);
+    setStatus(false,"Disconnected");
+  };
+  ws = new WebSocket("wss://api.derivws.com/trading/v1/options/ws/
   ws.onopen=()=>{
     setStatus(true,"Loading V25 history...");
     log("Connected to Deriv");
