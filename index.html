@@ -166,19 +166,16 @@ function connect(){
   setStatus(false,"Loading history...");
   ws = new WebSocket("wss://ws.binaryws.com/websockets/v3");
 
-  ws.onopen=()=>{
-    setStatus(true,"Loading history...");
-    log("Connected");ws.send(JSON.stringify({
-  ticks_history: SYMBOL,
-  end: "latest",
-  count: 100,
-  style: "ticks",
-  granularity: Number($("#tf").value),
-  subscribe: 1,
-  req_id: 1
-}));
-    
-  };
+  ws.onopen = () => {
+  setStatus(true, "Connected");
+  log("Connected");
+
+  ws.send(JSON.stringify({
+    ticks: SYMBOL,
+    subscribe: 1,
+    req_id: 1
+  }));
+};
 
   ws.onerror=()=>{
   log("WS ERROR");
