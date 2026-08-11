@@ -112,12 +112,15 @@ function connect(){
   ws=new WebSocket("wss://api.derivws.com/trading/v1/options/ws/public");
 
   ws.onopen=()=>{
-    setStatus(true,"Live");
+    setStatus(true,"Loading V25 history...");
     log("Connected to Deriv");
 
     ws.send(JSON.stringify({
-      ticks:SYMBOL,
-      subscribe:1
+      ticks_history:SYMBOL,
+      end:"latest",
+      count:100,
+      style:"candles",
+      granularity:1
     }));
   };
 
@@ -130,9 +133,44 @@ function connect(){
       return;
     }
 
+    if(d.msg_type==="candles"){
+      candles=d.candles.map(c=>({
+        time:Number(c.epoch),
+        open:Number(c.open),
+        high:Number(c.high),
+        low:Number(c.low),
+        close:Number(c.close)
+      }));
+
+      candleSeries.setData(candles);
+
+      log("Loaded "+candles.length+" historical candles");
+
+      analyze();
+
+      ws.send(JSON.stringify({
+        ticks:SYMBOL,
+        subscribe:1
+      }));
+
+      setStatus(true,"Live");
+      log("Live V25 ticks connected");
+      return;
+    }
+
     if(d.msg_type==="tick"){
       onTick(d.tick);
     }
+  };
+
+  ws.onclose=()=>{
+    setStatus(false,"Disconnected");
+  };
+
+  ws.onerror=()=>{
+    setStatus(false,"Connection error");
+  };
+}
   };
 
   ws.onclose=()=>{
