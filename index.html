@@ -86,9 +86,15 @@ function analyze(){
   if(!e50||rr==null||!aa)return;
   const trend=e20>e50?"BULLISH":"BEARISH"; const mom=rr>=55?"BULLISH":rr<=45?"BEARISH":"NEUTRAL";
   $("trend").textContent=trend;$("momentum").textContent=mom;
-  let score=(trend==="BULLISH"?1:-1)+(mom==="BULLISH"?1:mom==="BEARISH"?-1:0);
+  const recent=candles.slice(-10);
+const high10=Math.max(...recent.map(x=>x.high));
+const low10=Math.min(...recent.map(x=>x.low));
+const mid10=(high10+low10)/2;
+const structure=price>mid10?"BULLISH":price<mid10?"BEARISH":"NEUTRAL";
+
+let score=(trend==="BULLISH"?1:-1)+(mom==="BULLISH"?1:mom==="BEARISH"?-1:0)+(structure==="BULLISH"?1:structure==="BEARISH"?-1:0);
 let signal=score>=2?"BUY":score<=-2?"SELL":"WAIT";
-let confidence=50+Math.abs(score)*20;
+let confidence=Math.min(95,50+Math.abs(score)*15);
 
 $("signal").textContent=`${signal} (${confidence}%)`;
 $("signal").className="signal "+(signal==="BUY"?"green":signal==="SELL"?"red":"yellow");
