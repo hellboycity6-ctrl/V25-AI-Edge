@@ -111,7 +111,7 @@ function connect(){
 
   setStatus(false,"Connecting...");
 
-  ws = new WebSocket("wss://api.derivws.com/trading/v1/options/ws/public");
+  ws = new WebSocket("wss://ws.binaryws.com/websockets/v3");
 
   ws.onopen = () => {
     setStatus(true,"Loading V25 history...");
