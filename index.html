@@ -181,7 +181,11 @@ function connect(){
 
   ws.onmessage=e=>{
     let d=JSON.parse(e.data);
-
+if(d.error){
+  log("API ERROR: "+d.error.message);
+  setStatus(false,"API error");
+  return;
+}
     if(d.msg_type==="candles"){
       candles=[];
       current=null;
