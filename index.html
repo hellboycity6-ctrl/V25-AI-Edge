@@ -29,7 +29,14 @@
 <main>
   <section class="chartWrap">
     <div class="row" style="margin-bottom:8px">
-      <select id="tf"><option value="1">1m</option><option value="5">5m</option><option value="15">15m</option></select>
+      <select id="tf">
+  <option value="1">1s</option>
+  <option value="60" selected>1m</option>
+  <option value="300">5m</option>
+  <option value="900">15m</option>
+  <option value="1800">30m</option>
+  <option value="3600">1h</option>
+</select>
       <button id="reconnect">Reconnect</button>
       <button id="clear">Reset analysis</button>
     </div>
@@ -147,7 +154,7 @@ else{
 
 if(signal!==lastSignal){log(`Signal changed: ${signal}`);lastSignal=signal}
 }
-function bucket(epoch,mins){return Math.floor(epoch/(mins*60))*(mins*60)}
+function bucket(epoch,tf){return Math.floor(epoch/tf)*tf}
 function onTick(t){
   tickCount++; const tf=Number($("tf").value), time=bucket(t.epoch,tf), p=Number(t.quote);
   if(!current||current.time!==time){current={time,open:p,high:p,low:p,close:p};candles.push(current);if(candles.length>600)candles.shift()}
@@ -167,7 +174,7 @@ function connect(){
       end:"latest",
       count:100,
       style:"candles",
-      granularity:60,
+      granularity:Number($("#tf").value),
       req_id:1
     }));
   };
